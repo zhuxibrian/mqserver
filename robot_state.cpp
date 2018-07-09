@@ -18,7 +18,7 @@
  */
 
 #include "robot_state.h"
-#include "../../../include/endian.h"
+#include "./include/endian.h"
 
 RobotState::RobotState(std::condition_variable& msg_cond)
 {

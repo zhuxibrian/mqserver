@@ -27,7 +27,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <netinet/in.h>
-#include "../../../include/global.h"
+#include "./include/global.h"
 
 namespace message_types
 {
