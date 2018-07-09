@@ -27,7 +27,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <netinet/in.h>
-#include "./include/global.h"
+#include "../../../include/global.h"
 
 namespace message_types
 {
@@ -121,22 +121,6 @@ enum robot_state_type
 typedef robot_state_type_v30::robot_state_type robotStateTypeV30;
 
 
-struct aaa
-{
-    uint64_t timestamp;
-    bool isRobotConnected;
-    bool isRealRobotEnabled;
-    bool isPowerOnRobot;
-    bool isEmergencyStopped;
-    bool isProtectiveStopped;
-    bool isProgramRunning;
-    bool isProgramPaused;
-//    unsigned char robotMode;
-//    unsigned char controlMode;
-//    double targetSpeedFraction;
-//    double speedScaling;
-//    double targetSpeedFractionLimit;
-};
 
 struct robot_mode_data //ROBOT_MODE_DATA = 0
 {
@@ -427,7 +411,6 @@ struct version_message
 
     version_message () {
         major_version = 3;
-        minor_version = 1;
         svn_revision = 9;
         project_name_size = 0;
         project_name = nullptr;
@@ -567,6 +550,12 @@ struct requestValueMessage
     uint8_t textMessage_size;
     char * textMessage;
 
+    requestValueMessage() {
+        messageTitle_size = 0;
+        messageTitle = nullptr;
+        textMessage_size = 0;
+        textMessage = nullptr;
+    }
     ~requestValueMessage(){
         ZX_DELETE(messageTitle);
         ZX_DELETE(textMessage);
@@ -581,6 +570,10 @@ struct textMessageStruct
     uint8_t textMessage_size;
     char * textMessage;
 
+    textMessageStruct() {
+        textMessage_size = 0;
+        textMessage = nullptr;
+    }
     ~textMessageStruct(){
         ZX_DELETE(textMessage);
     }
@@ -594,6 +587,11 @@ struct runtimeExceptionMessage
     uint8_t textMessage_size;
     char * textMessage;
 
+
+    runtimeExceptionMessage() {
+        textMessage_size = 0;
+        textMessage = nullptr;
+    }
     ~runtimeExceptionMessage(){
         ZX_DELETE(textMessage);
     }
@@ -608,6 +606,12 @@ struct varMessage
     uint8_t messageText_size;
     char * messageText;
 
+    varMessage() {
+        titleSize = 0;
+        messageTitle = nullptr;
+        messageText_size = 0;
+        messageText = nullptr;
+    }
     ~varMessage(){
         ZX_DELETE(messageTitle);
         ZX_DELETE(messageText);
@@ -633,9 +637,11 @@ struct globalVariablesUpdateMessage_string
 {
     unsigned short length;
     char * value;
-    ~globalVariablesUpdateMessage_string(){
-        ZX_DELETE(value);
-    }
+
+
+//    ~globalVariablesUpdateMessage_string(){
+//        ZX_DELETE(value);
+//    }
 };
 
 struct globalVariablesUpdateMessage_pose
@@ -958,17 +964,25 @@ public:
     void finishedReading();
 
     //todo unpack from net 解释器不用，暂不实现
-    void unpack(uint8_t * buf, unsigned int buf_length);
-    void unpackRobotState(uint8_t * buf, unsigned int offset, uint32_t len);
-    void unpackRobotStateMasterboard(uint8_t * buf, unsigned int offset);
-    void unpackRobotMode(uint8_t * buf, unsigned int offset);
-	void unpackJointData(uint8_t * buf, unsigned int offset);
-	void unpackCartesianInfo(uint8_t * buf, unsigned int offset);
-    void unpackConfigurationData(uint8_t *buf, unsigned int offset);
-    void unpackAdditionalInfo(uint8_t *buf, unsigned int offset);
+    unsigned int unpack(uint8_t * buf, unsigned int buf_length);
 
-    void unpackRobotMessage(uint8_t * buf, unsigned int offset, uint32_t len);
-    void unpackRobotMessageVersion(uint8_t * buf, unsigned int offset, uint32_t len);
+    unsigned int unpackRobotState(uint8_t * buf, unsigned int offset, uint32_t len);
+
+    unsigned int unpackRobotStateMasterboard(uint8_t * buf, unsigned int offset);
+
+    unsigned int unpackRobotMode(uint8_t * buf, unsigned int offset);
+
+    unsigned int unpackJointData(uint8_t * buf, unsigned int offset);
+
+    unsigned int unpackCartesianInfo(uint8_t * buf, unsigned int offset);
+
+    unsigned int unpackConfigurationData(uint8_t *buf, unsigned int offset);
+
+    unsigned int unpackAdditionalInfo(uint8_t *buf, unsigned int offset);
+
+    unsigned int unpackRobotMessage(uint8_t * buf, unsigned int offset, uint32_t len);
+
+    unsigned int unpackRobotMessageVersion(uint8_t * buf, unsigned int offset, uint32_t len);
 
     unsigned int unpackRobotMessageVersion(uint8_t * buf, unsigned int offset);
     unsigned int unpackSafetyModeMessage(uint8_t *buf, unsigned int offset);
@@ -978,7 +992,7 @@ public:
 
     unsigned int unpackGlobalVariablesSetupMessage(uint8_t *buf, unsigned int offset);
 
-    /** pack to net */
+    /** pack to net*/
     unsigned int pack(uint8_t* buf);
 
 	unsigned int packRobotState(uint8_t* buf, unsigned int offset, uint8_t package_type);
@@ -1001,13 +1015,19 @@ public:
 
 
     /** unpack from memory*/
-	void unpackFromMem(uint8_t * buf, unsigned int buf_length);
-    void unpackFromMemRobotStateMasterboard(uint8_t * buf, unsigned int offset);
-    void unpackFromMemRobotMode(uint8_t * buf, unsigned int offset);
-    void unpackFromMemJointData(uint8_t * buf, unsigned int offset);
-    void unpackFromMemCartesianInfo(uint8_t * buf, unsigned int offset);
-    void unpackFromMemConfigurationData(uint8_t *buf, unsigned int offset);
-    void unpackFromMemAdditionalInfo(uint8_t *buf, unsigned int offset);
+    unsigned int unpackFromMem(uint8_t * buf, unsigned int buf_length);
+
+    unsigned int unpackFromMemRobotStateMasterboard(uint8_t * buf, unsigned int offset);
+
+    unsigned int unpackFromMemRobotMode(uint8_t * buf, unsigned int offset);
+
+    unsigned int unpackFromMemJointData(uint8_t * buf, unsigned int offset);
+
+    unsigned int unpackFromMemCartesianInfo(uint8_t * buf, unsigned int offset);
+
+    unsigned int unpackFromMemConfigurationData(uint8_t *buf, unsigned int offset);
+
+    unsigned int unpackFromMemAdditionalInfo(uint8_t *buf, unsigned int offset);
 
     unsigned int unpackFromMemRobotMessageVersion(uint8_t * buf, unsigned int offset);
     unsigned int unpackFromMemSafetyModeMessage(uint8_t *buf, unsigned int offset);
@@ -1036,7 +1056,6 @@ public:
 
     unsigned int packToMemProgramMessage(uint8_t* buf, unsigned int offset, uint8_t packToMemage_type);
     unsigned int packToMemGlobalVariablesSetupMessage(uint8_t *buf, unsigned int offset);
-    
 
     };
 
