@@ -76,8 +76,7 @@ public:
     void setRobotState() {
         shared_memory_object m_shm;
         mapped_region m_region;
-        shared_memory_object::remove("RobotState");
-        m_shm = shared_memory_object(create_only, "RobotState", read_write);
+        m_shm = shared_memory_object(open_only, "RobotState", read_write);
 
         m_shm.truncate(SHARE_MEMORY_SIZE);
         m_region = mapped_region(m_shm, read_write);
