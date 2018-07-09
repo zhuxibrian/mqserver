@@ -1,0 +1,8 @@
+//
+// Created by 朱熙 on 2018/6/3.
+//
+
+#ifndef PARSERSERVER_XMLSTRUCTS_H
+#define PARSERSERVER_XMLSTRUCTS_H
+
+#endif //PARSERSERVER_XMLSTRUCTS_H
