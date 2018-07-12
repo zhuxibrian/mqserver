@@ -58,13 +58,17 @@ public:
         message_queue::size_type recvd_size;
 
 
+        int code = 0;
+        string strCode;
         while (1) {
             char number[256] = {0};
             if (mq1->try_receive(number, sizeof(number), recvd_size, priority)) {
                 cout<<number<<endl;
                 if (recvd_size > 0) {
-                    mq2->send("CODE_0", 6, 0);
-                    cout << "send code 0" << endl;
+                    strCode = "CODE_" + to_string(code%10000);
+                    mq2->send(strCode.c_str(), strCode.length(), 0);
+                    cout << strCode << endl;
+                    code++;
                 }
 
             }
