@@ -65,7 +65,7 @@ public:
             if (mq1->try_receive(number, sizeof(number), recvd_size, priority)) {
                 cout<<number<<endl;
                 if (recvd_size > 0) {
-                    strCode = "CODE_" + to_string(code%10000);
+                    strCode = "CODE_0";// + to_string(code%10000);
                     mq2->send(strCode.c_str(), strCode.length(), 0);
                     cout << strCode << endl;
                     code++;
